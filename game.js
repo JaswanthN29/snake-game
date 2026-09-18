@@ -1,5 +1,5 @@
 /* ==========================================================================
-   PURE CANVAS SNAKE GAME ENGINE (iOS SAFARI & IPHONE PS4 CONTROLLER OPTIMIZED)
+   PURE CANVAS SNAKE GAME ENGINE (DYNAMIC WIDESCREEN RECTANGULAR GRID)
    ========================================================================== */
 
 // --- Audio Synthesizer (Web Audio API) ---
@@ -116,11 +116,14 @@ const sfx = new SoundFx();
 // --- Game Engine Class ---
 class PureSnakeGame {
   constructor() {
+    this.canvasWrapper = document.getElementById('canvas-wrapper');
     this.canvas = document.getElementById('game-canvas');
     this.ctx = this.canvas.getContext('2d');
     
-    this.gridCount = 25;
-    this.cellSize = this.canvas.width / this.gridCount;
+    // Dynamic Grid Properties (Rectangular)
+    this.cellSize = 20;
+    this.gridCols = 25;
+    this.gridRows = 25;
 
     // Overlays
     this.startOverlay = document.getElementById('start-overlay');
@@ -160,9 +163,35 @@ class PureSnakeGame {
       btnOptions: false
     };
 
+    this.resizeCanvas();
     this.initUI();
     this.initGamepad();
     this.renderInitialCanvas();
+
+    window.addEventListener('resize', () => {
+      this.resizeCanvas();
+      this.render();
+    });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        this.resizeCanvas();
+        this.render();
+      }, 200);
+    });
+  }
+
+  resizeCanvas() {
+    const rect = this.canvasWrapper.getBoundingClientRect();
+    this.canvas.width = Math.floor(rect.width);
+    this.canvas.height = Math.floor(rect.height);
+
+    // Aim for ~20-22px cells dynamically
+    const targetCellSize = 22;
+    this.gridCols = Math.max(15, Math.floor(this.canvas.width / targetCellSize));
+    this.gridRows = Math.max(15, Math.floor(this.canvas.height / targetCellSize));
+    
+    // Exact cell size to fill 100% of canvas area cleanly without gaps
+    this.cellSize = this.canvas.width / this.gridCols;
   }
 
   initUI() {
@@ -195,7 +224,6 @@ class PureSnakeGame {
       this.startGame();
     });
 
-    // Tap overlay background to start / unpause on iPhone
     this.startOverlay.addEventListener('click', () => {
       sfx.init();
       this.startGame();
@@ -218,7 +246,6 @@ class PureSnakeGame {
       this.triggerHaptic();
     });
 
-    // Active gamepad polling ticker for iOS Safari
     const pollLoop = () => {
       this.pollGamepad();
       requestAnimationFrame(pollLoop);
@@ -240,15 +267,12 @@ class PureSnakeGame {
 
     if (!gp) return;
 
-    // Helper for button press detection on iOS WebKit
     const isBtnPressed = (btnIndex) => {
       const b = gp.buttons[btnIndex];
       if (!b) return false;
       return b.pressed || b.value > 0.3;
     };
 
-    // iOS PS4 DualShock Mapping:
-    // Buttons: 0: Cross(✖), 1: Circle(🔴), 2: Square(⬛), 3: Triangle(🔺), 9: Options, 12: D-Up, 13: D-Down, 14: D-Left, 15: D-Right
     const btnX = isBtnPressed(0);
     const btnOptions = isBtnPressed(9) || isBtnPressed(1) || isBtnPressed(8) || isBtnPressed(16);
 
@@ -257,7 +281,6 @@ class PureSnakeGame {
     const dpadLeft = isBtnPressed(14);
     const dpadRight = isBtnPressed(15);
 
-    // Left Analog Stick (Axes 0 & 1)
     const axisX = gp.axes[0] || 0;
     const axisY = gp.axes[1] || 0;
 
@@ -271,7 +294,6 @@ class PureSnakeGame {
     const isLeft = dpadLeft || stickLeft;
     const isRight = dpadRight || stickRight;
 
-    // Edge Detection for Steering
     if (isUp && !this.gamepadPrev.up) {
       this.setDirection(0, -1);
     } else if (isDown && !this.gamepadPrev.down) {
@@ -282,7 +304,6 @@ class PureSnakeGame {
       this.setDirection(1, 0);
     }
 
-    // Edge Detection for Cross (✖) Button -> Start / Resume / Play Again
     if (btnX && !this.gamepadPrev.btnX) {
       sfx.init();
       if (this.state === 'IDLE' || this.state === 'GAMEOVER') {
@@ -293,7 +314,6 @@ class PureSnakeGame {
       }
     }
 
-    // Edge Detection for Options / Circle -> Pause
     if (btnOptions && !this.gamepadPrev.btnOptions) {
       sfx.init();
       if (this.state === 'PLAYING' || this.state === 'PAUSED') {
@@ -301,7 +321,6 @@ class PureSnakeGame {
       }
     }
 
-    // Update state history
     this.gamepadPrev.up = isUp;
     this.gamepadPrev.down = isDown;
     this.gamepadPrev.left = isLeft;
@@ -383,12 +402,16 @@ class PureSnakeGame {
   }
 
   startGame() {
+    this.resizeCanvas();
     this.hideAllOverlays();
     
+    const midX = Math.floor(this.gridCols / 2);
+    const midY = Math.floor(this.gridRows / 2);
+
     this.snake = [
-      { x: 12, y: 12 },
-      { x: 12, y: 13 },
-      { x: 12, y: 14 }
+      { x: midX, y: midY },
+      { x: midX, y: midY + 1 },
+      { x: midX, y: midY + 2 }
     ];
 
     this.dir = { x: 0, y: -1 };
@@ -456,8 +479,8 @@ class PureSnakeGame {
 
     while (!valid) {
       pos = {
-        x: Math.floor(Math.random() * this.gridCount),
-        y: Math.floor(Math.random() * this.gridCount)
+        x: Math.floor(Math.random() * this.gridCols),
+        y: Math.floor(Math.random() * this.gridRows)
       };
       valid = !this.snake.some(segment => segment.x === pos.x && segment.y === pos.y);
     }
@@ -475,8 +498,8 @@ class PureSnakeGame {
 
     while (!valid) {
       pos = {
-        x: Math.floor(Math.random() * this.gridCount),
-        y: Math.floor(Math.random() * this.gridCount)
+        x: Math.floor(Math.random() * this.gridCols),
+        y: Math.floor(Math.random() * this.gridRows)
       };
       valid = !this.snake.some(segment => segment.x === pos.x && segment.y === pos.y) &&
               !(this.normalFood && this.normalFood.x === pos.x && this.normalFood.y === pos.y);
@@ -513,7 +536,7 @@ class PureSnakeGame {
       y: this.snake[0].y + this.dir.y
     };
 
-    if (head.x < 0 || head.x >= this.gridCount || head.y < 0 || head.y >= this.gridCount) {
+    if (head.x < 0 || head.x >= this.gridCols || head.y < 0 || head.y >= this.gridRows) {
       this.createExplosion(this.snake[0].x, this.snake[0].y, '#ff0055', 25);
       this.gameOver();
       return;
@@ -625,15 +648,17 @@ class PureSnakeGame {
     ctx.strokeStyle = 'rgba(0, 240, 255, 0.07)';
     ctx.lineWidth = 1;
 
-    for (let i = 0; i <= this.gridCount; i++) {
+    for (let i = 0; i <= this.gridCols; i++) {
       ctx.beginPath();
       ctx.moveTo(i * this.cellSize, 0);
       ctx.lineTo(i * this.cellSize, this.canvas.height);
       ctx.stroke();
+    }
 
+    for (let j = 0; j <= this.gridRows; j++) {
       ctx.beginPath();
-      ctx.moveTo(0, i * this.cellSize);
-      ctx.lineTo(this.canvas.width, i * this.cellSize);
+      ctx.moveTo(0, j * this.cellSize);
+      ctx.lineTo(this.canvas.width, j * this.cellSize);
       ctx.stroke();
     }
   }

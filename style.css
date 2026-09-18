@@ -1,10 +1,10 @@
 /* ==========================================================================
-   MINIMAL FULL-SCREEN SNAKE GAME STYLESHEET (IPHONE LANDSCAPE OPTIMIZED)
+   RECTANGULAR FULL-SCREEN SNAKE GAME (DYNAMIC WIDESCREEN & LANDSCAPE)
    ========================================================================== */
 
 :root {
   --bg-gradient: radial-gradient(circle at 50% 50%, #0d1117 0%, #04060a 100%);
-  --panel-bg: rgba(13, 22, 38, 0.8);
+  --panel-bg: rgba(13, 22, 38, 0.85);
   --panel-border: rgba(0, 240, 255, 0.25);
   --primary-glow: #00f0ff;
   --secondary-glow: #ff007f;
@@ -50,55 +50,48 @@ html, body {
 .background-glob {
   position: fixed;
   border-radius: 50%;
-  filter: blur(90px);
+  filter: blur(100px);
   opacity: 0.15;
   pointer-events: none;
   z-index: 0;
 }
 
 .bg-glob-1 {
-  width: 350px;
-  height: 350px;
-  top: -80px;
-  left: -80px;
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  left: -100px;
   background: var(--primary-glow);
 }
 
 .bg-glob-2 {
-  width: 350px;
-  height: 350px;
-  bottom: -80px;
-  right: -80px;
+  width: 400px;
+  height: 400px;
+  bottom: -100px;
+  right: -100px;
   background: var(--secondary-glow);
 }
 
-/* App Container with iPhone Notch Safe Area Support */
+/* App Container - Full Viewport */
 .app-container {
   position: relative;
   z-index: 1;
-  width: 100%;
+  width: 100vw;
   height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: max(0.4rem, env(safe-area-inset-top));
-  padding-bottom: max(0.4rem, env(safe-area-inset-bottom));
-  padding-left: max(0.4rem, env(safe-area-inset-left));
-  padding-right: max(0.4rem, env(safe-area-inset-right));
+  padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
 }
 
-/* Canvas Wrapper - Default Portrait & General */
+/* Widescreen Canvas Wrapper - Fills 100% of Available Screen Area */
 .canvas-wrapper {
   position: relative;
-  width: min(88vw, 88dvh);
-  height: min(88vw, 88dvh);
-  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
   background: var(--panel-bg);
-  border: 2px solid var(--panel-border);
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px var(--panel-border);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 18px;
+  border: 1px solid var(--panel-border);
+  box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.08);
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -115,7 +108,7 @@ html, body {
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(4, 8, 16, 0.88);
+  background: rgba(4, 8, 16, 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -140,7 +133,7 @@ html, body {
   border-radius: 16px;
   padding: 1.25rem 1rem;
   text-align: center;
-  max-width: 280px;
+  max-width: 290px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -175,7 +168,7 @@ html, body {
 
 .primary-btn {
   width: 100%;
-  padding: 0.65rem 1rem;
+  padding: 0.7rem 1rem;
   border: none;
   border-radius: 10px;
   background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
@@ -194,7 +187,7 @@ html, body {
 
 .secondary-btn {
   width: 100%;
-  padding: 0.55rem 1rem;
+  padding: 0.6rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
@@ -251,51 +244,23 @@ html, body {
   40%, 60% { transform: translate3d(6px, 0, 0); }
 }
 
-/* ==========================================================================
-   IPHONE LANDSCAPE SPECIFIC OPTIMIZATIONS
-   ========================================================================== */
 @media (orientation: landscape) and (max-height: 500px) {
-  .app-container {
-    padding-top: max(0.2rem, env(safe-area-inset-top));
-    padding-bottom: max(0.2rem, env(safe-area-inset-bottom));
-    padding-left: max(1.5rem, env(safe-area-inset-left));
-    padding-right: max(1.5rem, env(safe-area-inset-right));
-  }
-
-  /* Force canvas size to be bounded by vertical height so it fits 100% on iPhone screen */
-  .canvas-wrapper {
-    width: min(88dvh, 88vw);
-    height: min(88dvh, 88vw);
-    max-width: 88dvh;
-    max-height: 88dvh;
-    border-radius: 14px;
-  }
-
   .glass-panel {
-    padding: 0.8rem 0.8rem;
+    padding: 0.75rem 0.8rem;
     max-width: 250px;
-    gap: 0.4rem;
+    gap: 0.35rem;
   }
-
   .overlay-icon {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
-
   .overlay h2 {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
   }
-
   .overlay p {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
   }
-
   .primary-btn {
-    padding: 0.5rem 0.8rem;
-    font-size: 0.82rem;
-  }
-
-  .secondary-btn {
     padding: 0.45rem 0.8rem;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
   }
 }
