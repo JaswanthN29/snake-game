@@ -1,5 +1,5 @@
 /* ==========================================================================
-   RECTANGULAR FULL-SCREEN SNAKE GAME (EDGE-TO-EDGE WIDESCREEN)
+   ARCADE SUITE STYLESHEET (MAIN MENU, SNAKE & TETRIS, LONG-PRESS QUIT)
    ========================================================================== */
 
 :root {
@@ -10,14 +10,6 @@
   --secondary-glow: #ff007f;
   --text-main: #f0f6fc;
   --text-muted: #8b949e;
-  --grid-line: rgba(0, 240, 255, 0.08);
-  --snake-head: #00f0ff;
-  --snake-body-start: #00f0ff;
-  --snake-body-end: #0077ff;
-  --snake-glow: rgba(0, 240, 255, 0.6);
-  --food-normal: #ff007f;
-  --food-gold: #ffe600;
-  --food-speed: #00ffaa;
   --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-display: 'Orbitron', monospace;
 }
@@ -72,7 +64,7 @@ html, body {
   background: var(--secondary-glow);
 }
 
-/* App Container - 100% Edge-to-Edge */
+/* App Container */
 .app-container {
   position: relative;
   z-index: 1;
@@ -85,7 +77,7 @@ html, body {
   padding: 0;
 }
 
-/* Canvas Wrapper - Completely Edge-to-Edge Fill */
+/* Canvas Wrapper */
 .canvas-wrapper {
   position: relative;
   width: 100vw;
@@ -109,9 +101,9 @@ html, body {
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(4, 8, 16, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(4, 8, 16, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -127,29 +119,30 @@ html, body {
   pointer-events: auto;
 }
 
+/* Glass Panels */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.88);
+  background: rgba(15, 23, 42, 0.9);
   border: 1px solid var(--panel-border);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
-  border-radius: 16px;
-  padding: 1.25rem 1rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+  border-radius: 18px;
+  padding: 1.5rem 1.25rem;
   text-align: center;
-  max-width: 290px;
+  max-width: 320px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .overlay-icon {
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   filter: drop-shadow(0 0 10px var(--primary-glow));
 }
 
 .overlay h2 {
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 800;
   letter-spacing: 2px;
   color: var(--text-main);
@@ -162,20 +155,119 @@ html, body {
 }
 
 .overlay p {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
+/* --- Main Menu Overlay & Game Cards --- */
+.menu-card {
+  max-width: 440px;
+  width: 90%;
+  padding: 1.75rem 1.5rem;
+  gap: 1rem;
+}
+
+.arcade-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--text-main);
+}
+
+.arcade-title .highlight {
+  color: var(--primary-glow);
+  text-shadow: 0 0 12px var(--primary-glow);
+}
+
+.menu-subtext {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.game-select-grid {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0.25rem 0;
+}
+
+.game-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.game-card:hover, .game-card:active {
+  background: rgba(0, 240, 255, 0.12);
+  border-color: var(--primary-glow);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.game-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.game-info {
+  flex: 1;
+}
+
+.game-info h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.game-info p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.select-btn {
+  padding: 0.45rem 0.85rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary-glow);
+  color: #000;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.menu-footer {
+  margin-top: 0.25rem;
+}
+
+.tip-tag {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+  display: block;
+}
+
+/* Buttons */
 .primary-btn {
   width: 100%;
-  padding: 0.7rem 1rem;
+  padding: 0.75rem 1rem;
   border: none;
   border-radius: 10px;
   background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
   color: #000;
   font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 800;
   letter-spacing: 1px;
   cursor: pointer;
@@ -188,22 +280,37 @@ html, body {
 
 .secondary-btn {
   width: 100%;
-  padding: 0.6rem 1rem;
+  padding: 0.65rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
+}
+
+.secondary-btn.danger-border {
+  border-color: rgba(255, 51, 102, 0.4);
+  color: #ff3366;
+}
+
+.danger-btn {
+  background: linear-gradient(135deg, #ff3366, #ff0055) !important;
+  color: #fff !important;
+  box-shadow: 0 0 15px rgba(255, 51, 102, 0.6) !important;
+}
+
+.danger-panel {
+  border-color: rgba(255, 51, 102, 0.4);
 }
 
 .button-stack {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.5rem;
 }
 
 .final-stats {
@@ -211,7 +318,7 @@ html, body {
   display: flex;
   justify-content: space-around;
   background: rgba(0, 0, 0, 0.3);
-  padding: 0.4rem;
+  padding: 0.5rem;
   border-radius: 10px;
 }
 
@@ -222,13 +329,13 @@ html, body {
 }
 
 .stat-name {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
 }
 
 .stat-number {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--primary-glow);
 }
@@ -246,22 +353,38 @@ html, body {
 }
 
 @media (orientation: landscape) and (max-height: 500px) {
+  .menu-card {
+    padding: 0.85rem 1.25rem;
+    gap: 0.4rem;
+  }
+  .arcade-title {
+    font-size: 1.3rem;
+  }
+  .game-select-grid {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  .game-card {
+    flex: 1;
+    padding: 0.5rem 0.65rem;
+    gap: 0.5rem;
+  }
+  .game-icon {
+    font-size: 1.4rem;
+  }
+  .game-info h3 {
+    font-size: 0.85rem;
+  }
+  .game-info p {
+    font-size: 0.68rem;
+  }
+  .select-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.72rem;
+  }
   .glass-panel {
     padding: 0.75rem 0.8rem;
     max-width: 250px;
     gap: 0.35rem;
-  }
-  .overlay-icon {
-    font-size: 1.5rem;
-  }
-  .overlay h2 {
-    font-size: 1.05rem;
-  }
-  .overlay p {
-    font-size: 0.72rem;
-  }
-  .primary-btn {
-    padding: 0.45rem 0.8rem;
-    font-size: 0.8rem;
   }
 }

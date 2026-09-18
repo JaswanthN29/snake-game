@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Snake Game</title>
-  <meta name="description" content="Ultra-clean full-screen minimal Snake Game with wraparound walls and PS4 Controller support.">
+  <title>Arcade Suite | Snake & Tetris</title>
+  <meta name="description" content="Minimal full-screen Arcade featuring Snake and Tetris with PS4 Controller support.">
   <meta name="theme-color" content="#04060a">
   
   <!-- iOS Safari Full-Screen Web App Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Snake Game">
+  <meta name="apple-mobile-web-app-title" content="Arcade Suite">
 
   <!-- Cache Control Meta Tags -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -20,27 +20,69 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
   
-  <!-- Styling (With Cache-Busting Version Query) -->
-  <link rel="stylesheet" href="style.css?v=1.0.4">
+  <!-- Styling -->
+  <link rel="stylesheet" href="style.css?v=2.0.0">
 </head>
 <body data-theme="cyber">
   <div class="background-glob bg-glob-1"></div>
   <div class="background-glob bg-glob-2"></div>
   
   <div class="app-container">
+    <!-- Main Arcade Selection Menu -->
+    <div id="main-menu-overlay" class="overlay active">
+      <div class="menu-card glass-panel">
+        <h1 class="arcade-title">ARCADE<span class="highlight">SUITE</span></h1>
+        <p class="menu-subtext">Select a game to play (Keyboard, Touch, or PS4 Controller)</p>
+        
+        <div class="game-select-grid">
+          <div class="game-card" id="select-snake-btn">
+            <div class="game-icon">🐍</div>
+            <div class="game-info">
+              <h3>NEON SNAKE</h3>
+              <p>Wraparound walls & speed combos</p>
+            </div>
+            <button class="select-btn">PLAY</button>
+          </div>
+
+          <div class="game-card" id="select-tetris-btn">
+            <div class="game-icon">🧩</div>
+            <div class="game-info">
+              <h3>CYBER TETRIS</h3>
+              <p>7-Tetromino stacker & ghost projection</p>
+            </div>
+            <button class="select-btn">PLAY</button>
+          </div>
+        </div>
+
+        <div class="menu-footer">
+          <span class="tip-tag">💡 Long-press screen, Esc key, or hold Controller Options to exit any game.</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Main Game Canvas Container -->
     <div class="canvas-wrapper" id="canvas-wrapper">
       <canvas id="game-canvas"></canvas>
 
-      <!-- Start Overlay -->
-      <div id="start-overlay" class="overlay active">
+      <!-- Snake Start Overlay -->
+      <div id="snake-start-overlay" class="overlay">
         <div class="overlay-card glass-panel">
-          <div class="overlay-icon">🎮</div>
-          <h2>SNAKE</h2>
-          <p>Wraparound Walls Enabled! Pass through walls to emerge on the opposite side.</p>
-          <button id="start-btn" class="primary-btn">PLAY</button>
+          <div class="overlay-icon">🐍</div>
+          <h2>NEON SNAKE</h2>
+          <p>Pass through walls to emerge on opposite sides!</p>
+          <button id="snake-start-btn" class="primary-btn">START SNAKE</button>
+        </div>
+      </div>
+
+      <!-- Tetris Start Overlay -->
+      <div id="tetris-start-overlay" class="overlay">
+        <div class="overlay-card glass-panel">
+          <div class="overlay-icon">🧩</div>
+          <h2>CYBER TETRIS</h2>
+          <p>Rotate, stack, and clear full horizontal lines!</p>
+          <button id="tetris-start-btn" class="primary-btn">START TETRIS</button>
         </div>
       </div>
 
@@ -51,7 +93,8 @@
           <h2>PAUSED</h2>
           <div class="button-stack">
             <button id="resume-btn" class="primary-btn">Resume</button>
-            <button id="restart-pause-btn" class="secondary-btn">Restart</button>
+            <button id="restart-pause-btn" class="secondary-btn">Restart Game</button>
+            <button id="menu-pause-btn" class="secondary-btn danger-border">Main Menu</button>
           </div>
         </div>
       </div>
@@ -71,13 +114,30 @@
               <span class="stat-number" id="final-best">0</span>
             </div>
           </div>
-          <button id="restart-btn" class="primary-btn">PLAY AGAIN</button>
+          <div class="button-stack">
+            <button id="restart-btn" class="primary-btn">PLAY AGAIN</button>
+            <button id="menu-gameover-btn" class="secondary-btn">Main Menu</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quit Confirmation Modal (Triggered by Long-Press) -->
+      <div id="quit-modal" class="overlay">
+        <div class="overlay-card glass-panel danger-panel">
+          <div class="overlay-icon">🚪</div>
+          <h2>QUIT TO MENU?</h2>
+          <p>Are you sure you want to exit to the Game Selection menu?</p>
+          <div class="button-stack">
+            <button id="confirm-quit-btn" class="primary-btn danger-btn">YES, QUIT</button>
+            <button id="cancel-quit-btn" class="secondary-btn">CANCEL</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- JavaScript (With Cache-Busting Version Query) -->
-  <script src="game.js?v=1.0.4"></script>
+  <!-- JavaScript Modules -->
+  <script src="tetris.js?v=2.0.0"></script>
+  <script src="game.js?v=2.0.0"></script>
 </body>
 </html>
