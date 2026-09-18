@@ -1,10 +1,10 @@
 /* ==========================================================================
-   RECTANGULAR FULL-SCREEN SNAKE GAME (DYNAMIC WIDESCREEN & LANDSCAPE)
+   RECTANGULAR FULL-SCREEN SNAKE GAME (EDGE-TO-EDGE WIDESCREEN)
    ========================================================================== */
 
 :root {
   --bg-gradient: radial-gradient(circle at 50% 50%, #0d1117 0%, #04060a 100%);
-  --panel-bg: rgba(13, 22, 38, 0.85);
+  --panel-bg: #070a0f;
   --panel-border: rgba(0, 240, 255, 0.25);
   --primary-glow: #00f0ff;
   --secondary-glow: #ff007f;
@@ -37,7 +37,7 @@ html, body {
   width: 100%;
   height: 100dvh;
   min-height: 100vh;
-  background: var(--bg-gradient);
+  background: #04060a;
   color: var(--text-main);
   font-family: var(--font-main);
   overflow: hidden;
@@ -72,7 +72,7 @@ html, body {
   background: var(--secondary-glow);
 }
 
-/* App Container - Full Viewport */
+/* App Container - 100% Edge-to-Edge */
 .app-container {
   position: relative;
   z-index: 1;
@@ -81,17 +81,18 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+  margin: 0;
+  padding: 0;
 }
 
-/* Widescreen Canvas Wrapper - Fills 100% of Available Screen Area */
+/* Canvas Wrapper - Completely Edge-to-Edge Fill */
 .canvas-wrapper {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100dvh;
   background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
-  box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.08);
+  border: none;
+  border-radius: 0;
   overflow: hidden;
   display: flex;
   justify-content: center;

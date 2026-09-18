@@ -4,16 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Snake Game</title>
-  <meta name="description" content="Ultra-clean minimal Snake Game with PS4 Controller support.">
+  <meta name="description" content="Ultra-clean full-screen minimal Snake Game.">
   <meta name="theme-color" content="#04060a">
   
+  <!-- iOS Safari Full-Screen Web App Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Snake Game">
+
+  <!-- Cache Control Meta Tags -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
   
-  <!-- Styling -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Styling (With Cache-Busting Version Query) -->
+  <link rel="stylesheet" href="style.css?v=1.0.3">
 </head>
 <body data-theme="cyber">
   <div class="background-glob bg-glob-1"></div>
@@ -22,7 +32,7 @@
   <div class="app-container">
     <!-- Main Game Canvas Container -->
     <div class="canvas-wrapper" id="canvas-wrapper">
-      <canvas id="game-canvas" width="500" height="500"></canvas>
+      <canvas id="game-canvas"></canvas>
 
       <!-- Start Overlay -->
       <div id="start-overlay" class="overlay active">
@@ -67,7 +77,7 @@
     </div>
   </div>
 
-  <!-- JavaScript -->
-  <script src="game.js"></script>
+  <!-- JavaScript (With Cache-Busting Version Query) -->
+  <script src="game.js?v=1.0.3"></script>
 </body>
 </html>
