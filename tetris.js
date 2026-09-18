@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CYBER TETRIS GAME ENGINE (FULL-FEATURED SRS & AUDIO SYNTHESIZER)
+   CYBER TETRIS GAME ENGINE (100% FULL-SCREEN EDGE-TO-EDGE MATRIX)
    ========================================================================== */
 
 // Tetromino Definitions & Rotations
@@ -185,8 +185,8 @@ class CyberTetrisEngine {
     this.level = 1;
     this.highScore = parseInt(localStorage.getItem('cyber_tetris_highscore') || '0', 10);
 
-    this.state = 'IDLE'; // 'IDLE' | 'PLAYING' | 'PAUSED' | 'GAMEOVER'
-    this.dropInterval = 800; // ms per drop
+    this.state = 'IDLE';
+    this.dropInterval = 800;
     this.lastDropTime = 0;
     this.animFrameId = null;
 
@@ -202,14 +202,17 @@ class CyberTetrisEngine {
     this.canvas.width = Math.floor(rect.width);
     this.canvas.height = Math.floor(rect.height);
 
-    // Tetris Board Dimensions: 10 cols x 20 rows
-    // In landscape or portrait, fit 20 rows vertically in canvas height
-    this.boardHeight = this.canvas.height * 0.92;
-    this.cellSize = this.boardHeight / this.rows;
-    this.boardWidth = this.cellSize * this.cols;
+    // Calculate columns & rows to fill 100% of widescreen aspect ratio
+    const targetCellSize = 24;
+    this.cols = Math.max(10, Math.floor(this.canvas.width / targetCellSize));
+    this.rows = Math.max(15, Math.floor(this.canvas.height / targetCellSize));
 
-    this.boardX = (this.canvas.width - this.boardWidth) / 2;
-    this.boardY = (this.canvas.height - this.boardHeight) / 2;
+    this.cellSize = this.canvas.width / this.cols;
+    this.boardWidth = this.canvas.width;
+    this.boardHeight = this.canvas.height;
+
+    this.boardX = 0;
+    this.boardY = 0;
   }
 
   startGame() {
@@ -249,7 +252,6 @@ class CyberTetrisEngine {
     this.activePiece = this.nextPiece;
     this.nextPiece = this.generatePiece();
 
-    // Check game over collision on spawn
     if (this.checkCollision(this.activePiece.x, this.activePiece.y, this.activePiece.shape)) {
       this.gameOver();
     }
@@ -268,7 +270,6 @@ class CyberTetrisEngine {
       }
     }
 
-    // SRS Wall kick checks
     const kicks = [0, 1, -1, 2, -2];
     for (let kick of kicks) {
       if (!this.checkCollision(this.activePiece.x + kick, this.activePiece.y, rotated)) {
@@ -363,18 +364,16 @@ class CyberTetrisEngine {
 
     for (let r = this.rows - 1; r >= 0; r--) {
       if (this.grid[r].every(cell => cell !== 0)) {
-        // Create line clear particles
         this.createLineParticles(r);
         this.grid.splice(r, 1);
         this.grid.unshift(Array(this.cols).fill(0));
         cleared++;
-        r++; // Check same row index again after shift
+        r++;
       }
     }
 
     if (cleared > 0) {
       this.linesCleared += cleared;
-      
       const scoreMultipliers = [0, 100, 300, 500, 800];
       this.score += (scoreMultipliers[cleared] || 100) * this.level;
 
@@ -384,17 +383,16 @@ class CyberTetrisEngine {
         tetrisSfx.playLineClear();
       }
 
-      // Level up every 10 lines
       this.level = Math.floor(this.linesCleared / 10) + 1;
       this.dropInterval = Math.max(100, 800 - (this.level - 1) * 70);
     }
   }
 
   createLineParticles(row) {
-    const py = this.boardY + (row + 0.5) * this.cellSize;
+    const py = (row + 0.5) * this.cellSize;
     for (let c = 0; c < this.cols; c++) {
-      const px = this.boardX + (c + 0.5) * this.cellSize;
-      for (let i = 0; i < 4; i++) {
+      const px = (c + 0.5) * this.cellSize;
+      for (let i = 0; i < 3; i++) {
         const angle = Math.random() * Math.PI * 2;
         const speed = 1 + Math.random() * 4;
         this.particles.push({
@@ -457,8 +455,8 @@ class CyberTetrisEngine {
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Draw Board Background & Grid Lines
-    this.drawBoard();
+    // Draw Grid Lines
+    this.drawGrid();
 
     // Draw Fixed Blocks on Board
     this.drawFixedBlocks();
@@ -476,40 +474,23 @@ class CyberTetrisEngine {
     this.drawTetrisHUD();
   }
 
-  drawBoard() {
+  drawGrid() {
     const ctx = this.ctx;
-    ctx.save();
-
-    // Board container background
-    ctx.fillStyle = 'rgba(7, 10, 15, 0.95)';
-    ctx.fillRect(this.boardX, this.boardY, this.boardWidth, this.boardHeight);
-
-    // Outer Glow Border
-    ctx.strokeStyle = 'rgba(0, 240, 255, 0.3)';
-    ctx.lineWidth = 2;
-    ctx.shadowColor = '#00f0ff';
-    ctx.shadowBlur = 10;
-    ctx.strokeRect(this.boardX, this.boardY, this.boardWidth, this.boardHeight);
-
-    // Grid lines inside board
-    ctx.strokeStyle = 'rgba(0, 240, 255, 0.08)';
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.07)';
     ctx.lineWidth = 1;
-    ctx.shadowBlur = 0;
 
     for (let c = 0; c <= this.cols; c++) {
       ctx.beginPath();
-      ctx.moveTo(this.boardX + c * this.cellSize, this.boardY);
-      ctx.lineTo(this.boardX + c * this.cellSize, this.boardY + this.boardHeight);
+      ctx.moveTo(c * this.cellSize, 0);
+      ctx.lineTo(c * this.cellSize, this.canvas.height);
       ctx.stroke();
     }
     for (let r = 0; r <= this.rows; r++) {
       ctx.beginPath();
-      ctx.moveTo(this.boardX, this.boardY + r * this.cellSize);
-      ctx.lineTo(this.boardX + this.boardWidth, this.boardY + r * this.cellSize);
+      ctx.moveTo(0, r * this.cellSize);
+      ctx.lineTo(this.canvas.width, r * this.cellSize);
       ctx.stroke();
     }
-
-    ctx.restore();
   }
 
   drawFixedBlocks() {
@@ -531,8 +512,8 @@ class CyberTetrisEngine {
     for (let r = 0; r < shape.length; r++) {
       for (let c = 0; c < shape[r].length; c++) {
         if (shape[r][c]) {
-          const px = this.boardX + (this.activePiece.x + c) * this.cellSize;
-          const py = this.boardY + (ghostY + r) * this.cellSize;
+          const px = (this.activePiece.x + c) * this.cellSize;
+          const py = (ghostY + r) * this.cellSize;
 
           ctx.save();
           ctx.strokeStyle = this.activePiece.color;
@@ -557,8 +538,8 @@ class CyberTetrisEngine {
 
   drawCell(col, row, color, glow) {
     const ctx = this.ctx;
-    const px = this.boardX + col * this.cellSize;
-    const py = this.boardY + row * this.cellSize;
+    const px = col * this.cellSize;
+    const py = row * this.cellSize;
     const sz = this.cellSize;
 
     ctx.save();
@@ -568,7 +549,6 @@ class CyberTetrisEngine {
     ctx.fillStyle = color;
     ctx.fillRect(px + 1, py + 1, sz - 2, sz - 2);
 
-    // Inner bright highlight
     ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
     ctx.fillRect(px + 2, py + 2, sz - 4, (sz - 4) * 0.25);
 
@@ -603,55 +583,17 @@ class CyberTetrisEngine {
   drawTetrisHUD() {
     const ctx = this.ctx;
     ctx.save();
-    ctx.font = '800 14px "Orbitron", monospace';
-    ctx.fillStyle = 'rgba(240, 246, 252, 0.85)';
+    ctx.font = '800 16px "Orbitron", monospace';
+    ctx.fillStyle = 'rgba(240, 246, 252, 0.9)';
     ctx.shadowColor = '#00f0ff';
     ctx.shadowBlur = 8;
 
-    // Draw Left Panel (Score & Level)
-    const leftMargin = Math.max(12, this.boardX - 110);
-    if (this.boardX > 100) {
-      ctx.fillText(`SCORE`, leftMargin, this.boardY + 30);
-      ctx.font = '800 18px "Orbitron", monospace';
-      ctx.fillText(`${this.score}`, leftMargin, this.boardY + 54);
+    // Draw Score top left
+    ctx.fillText(`SCORE: ${this.score}`, 16, 32);
 
-      ctx.font = '800 14px "Orbitron", monospace';
-      ctx.fillText(`LEVEL`, leftMargin, this.boardY + 95);
-      ctx.font = '800 18px "Orbitron", monospace';
-      ctx.fillText(`${this.level}`, leftMargin, this.boardY + 119);
-
-      ctx.font = '800 14px "Orbitron", monospace';
-      ctx.fillText(`BEST`, leftMargin, this.boardY + 160);
-      ctx.font = '800 18px "Orbitron", monospace';
-      ctx.fillText(`${this.highScore}`, leftMargin, this.boardY + 184);
-    } else {
-      // In narrow viewports, draw score at top
-      ctx.fillText(`SCORE: ${this.score}`, 16, 28);
-      ctx.textAlign = 'right';
-      ctx.fillText(`LVL: ${this.level}  BEST: ${this.highScore}`, this.canvas.width - 16, 28);
-    }
-
-    // Draw Next Piece Preview on Right Panel if space exists
-    if (this.nextPiece && (this.canvas.width - (this.boardX + this.boardWidth)) > 80) {
-      const rightX = this.boardX + this.boardWidth + 20;
-      ctx.textAlign = 'left';
-      ctx.font = '800 14px "Orbitron", monospace';
-      ctx.fillText(`NEXT`, rightX, this.boardY + 30);
-
-      // Draw Next Piece shape preview
-      const shape = this.nextPiece.shape;
-      const previewCell = Math.min(18, this.cellSize * 0.75);
-      for (let r = 0; r < shape.length; r++) {
-        for (let c = 0; c < shape[r].length; c++) {
-          if (shape[r][c]) {
-            const px = rightX + c * previewCell;
-            const py = this.boardY + 45 + r * previewCell;
-            ctx.fillStyle = this.nextPiece.color;
-            ctx.fillRect(px, py, previewCell - 1, previewCell - 1);
-          }
-        }
-      }
-    }
+    // Draw Best & Level top right
+    ctx.textAlign = 'right';
+    ctx.fillText(`LVL: ${this.level}  BEST: ${this.highScore}`, this.canvas.width - 16, 32);
 
     ctx.restore();
   }
