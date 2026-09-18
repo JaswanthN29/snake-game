@@ -1,0 +1,301 @@
+/* ==========================================================================
+   MINIMAL FULL-SCREEN SNAKE GAME STYLESHEET (IPHONE LANDSCAPE OPTIMIZED)
+   ========================================================================== */
+
+:root {
+  --bg-gradient: radial-gradient(circle at 50% 50%, #0d1117 0%, #04060a 100%);
+  --panel-bg: rgba(13, 22, 38, 0.8);
+  --panel-border: rgba(0, 240, 255, 0.25);
+  --primary-glow: #00f0ff;
+  --secondary-glow: #ff007f;
+  --text-main: #f0f6fc;
+  --text-muted: #8b949e;
+  --grid-line: rgba(0, 240, 255, 0.08);
+  --snake-head: #00f0ff;
+  --snake-body-start: #00f0ff;
+  --snake-body-end: #0077ff;
+  --snake-glow: rgba(0, 240, 255, 0.6);
+  --food-normal: #ff007f;
+  --food-gold: #ffe600;
+  --food-speed: #00ffaa;
+  --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Orbitron', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100dvh;
+  min-height: 100vh;
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  overflow: hidden;
+  overscroll-behavior: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.background-glob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-glob-1 {
+  width: 350px;
+  height: 350px;
+  top: -80px;
+  left: -80px;
+  background: var(--primary-glow);
+}
+
+.bg-glob-2 {
+  width: 350px;
+  height: 350px;
+  bottom: -80px;
+  right: -80px;
+  background: var(--secondary-glow);
+}
+
+/* App Container with iPhone Notch Safe Area Support */
+.app-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: max(0.4rem, env(safe-area-inset-top));
+  padding-bottom: max(0.4rem, env(safe-area-inset-bottom));
+  padding-left: max(0.4rem, env(safe-area-inset-left));
+  padding-right: max(0.4rem, env(safe-area-inset-right));
+}
+
+/* Canvas Wrapper - Default Portrait & General */
+.canvas-wrapper {
+  position: relative;
+  width: min(88vw, 88dvh);
+  height: min(88vw, 88dvh);
+  aspect-ratio: 1 / 1;
+  background: var(--panel-bg);
+  border: 2px solid var(--panel-border);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px var(--panel-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Overlays */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 8, 16, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 10;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.glass-panel {
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+  border-radius: 16px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  max-width: 280px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.overlay-icon {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 0 10px var(--primary-glow));
+}
+
+.overlay h2 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--text-main);
+  text-shadow: 0 0 10px var(--primary-glow);
+}
+
+.overlay h2.danger-text {
+  color: #ff3366;
+  text-shadow: 0 0 10px #ff3366;
+}
+
+.overlay p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
+  color: #000;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.primary-btn:active {
+  transform: scale(0.96);
+}
+
+.secondary-btn {
+  width: 100%;
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button-stack {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.final-stats {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.4rem;
+  border-radius: 10px;
+}
+
+.final-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-name {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary-glow);
+}
+
+/* Screen Shake Effect */
+.shake {
+  animation: screenShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes screenShake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
+}
+
+/* ==========================================================================
+   IPHONE LANDSCAPE SPECIFIC OPTIMIZATIONS
+   ========================================================================== */
+@media (orientation: landscape) and (max-height: 500px) {
+  .app-container {
+    padding-top: max(0.2rem, env(safe-area-inset-top));
+    padding-bottom: max(0.2rem, env(safe-area-inset-bottom));
+    padding-left: max(1.5rem, env(safe-area-inset-left));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+  }
+
+  /* Force canvas size to be bounded by vertical height so it fits 100% on iPhone screen */
+  .canvas-wrapper {
+    width: min(88dvh, 88vw);
+    height: min(88dvh, 88vw);
+    max-width: 88dvh;
+    max-height: 88dvh;
+    border-radius: 14px;
+  }
+
+  .glass-panel {
+    padding: 0.8rem 0.8rem;
+    max-width: 250px;
+    gap: 0.4rem;
+  }
+
+  .overlay-icon {
+    font-size: 1.6rem;
+  }
+
+  .overlay h2 {
+    font-size: 1.1rem;
+  }
+
+  .overlay p {
+    font-size: 0.75rem;
+  }
+
+  .primary-btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.82rem;
+  }
+
+  .secondary-btn {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.78rem;
+  }
+}

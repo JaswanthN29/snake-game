@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Snake Game</title>
+  <meta name="description" content="Ultra-clean minimal Snake Game with PS4 Controller support.">
+  <meta name="theme-color" content="#04060a">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="cyber">
+  <div class="background-glob bg-glob-1"></div>
+  <div class="background-glob bg-glob-2"></div>
+  
+  <div class="app-container">
+    <!-- Main Game Canvas Container -->
+    <div class="canvas-wrapper" id="canvas-wrapper">
+      <canvas id="game-canvas" width="500" height="500"></canvas>
+
+      <!-- Start Overlay -->
+      <div id="start-overlay" class="overlay active">
+        <div class="overlay-card glass-panel">
+          <div class="overlay-icon">🎮</div>
+          <h2>SNAKE</h2>
+          <p>Use Keyboard, Touch Swipe, or PS4 Controller (D-Pad / Left Stick / ✖ to play).</p>
+          <button id="start-btn" class="primary-btn">PLAY</button>
+        </div>
+      </div>
+
+      <!-- Pause Overlay -->
+      <div id="pause-overlay" class="overlay">
+        <div class="overlay-card glass-panel">
+          <div class="overlay-icon">⏸️</div>
+          <h2>PAUSED</h2>
+          <div class="button-stack">
+            <button id="resume-btn" class="primary-btn">Resume</button>
+            <button id="restart-pause-btn" class="secondary-btn">Restart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Over Overlay -->
+      <div id="game-over-overlay" class="overlay">
+        <div class="overlay-card glass-panel">
+          <div class="overlay-icon">💀</div>
+          <h2 class="danger-text">GAME OVER</h2>
+          <div class="final-stats">
+            <div class="final-stat-item">
+              <span class="stat-name">Score</span>
+              <span class="stat-number" id="final-score">0</span>
+            </div>
+            <div class="final-stat-item">
+              <span class="stat-name">Best</span>
+              <span class="stat-number" id="final-best">0</span>
+            </div>
+          </div>
+          <button id="restart-btn" class="primary-btn">PLAY AGAIN</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="game.js"></script>
+</body>
+</html>
