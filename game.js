@@ -1,5 +1,5 @@
 /* ==========================================================================
-   PURE CANVAS SNAKE GAME ENGINE (DYNAMIC WIDESCREEN RECTANGULAR GRID)
+   PURE CANVAS SNAKE GAME ENGINE (WRAPAROUND WALL LOGIC & WIDESCREEN GRID)
    ========================================================================== */
 
 // --- Audio Synthesizer (Web Audio API) ---
@@ -185,12 +185,10 @@ class PureSnakeGame {
     this.canvas.width = Math.floor(rect.width);
     this.canvas.height = Math.floor(rect.height);
 
-    // Aim for ~20-22px cells dynamically
     const targetCellSize = 22;
     this.gridCols = Math.max(15, Math.floor(this.canvas.width / targetCellSize));
     this.gridRows = Math.max(15, Math.floor(this.canvas.height / targetCellSize));
     
-    // Exact cell size to fill 100% of canvas area cleanly without gaps
     this.cellSize = this.canvas.width / this.gridCols;
   }
 
@@ -531,17 +529,25 @@ class PureSnakeGame {
   updateGameLogic() {
     this.dir = { ...this.nextDir };
 
-    const head = {
+    let head = {
       x: this.snake[0].x + this.dir.x,
       y: this.snake[0].y + this.dir.y
     };
 
-    if (head.x < 0 || head.x >= this.gridCols || head.y < 0 || head.y >= this.gridRows) {
-      this.createExplosion(this.snake[0].x, this.snake[0].y, '#ff0055', 25);
-      this.gameOver();
-      return;
+    // --- WRAPAROUND WALL LOGIC ---
+    if (head.x < 0) {
+      head.x = this.gridCols - 1;
+    } else if (head.x >= this.gridCols) {
+      head.x = 0;
     }
 
+    if (head.y < 0) {
+      head.y = this.gridRows - 1;
+    } else if (head.y >= this.gridRows) {
+      head.y = 0;
+    }
+
+    // Check Self Collision
     if (this.snake.some(segment => segment.x === head.x && segment.y === head.y)) {
       this.createExplosion(head.x, head.y, '#ff0055', 25);
       this.gameOver();
